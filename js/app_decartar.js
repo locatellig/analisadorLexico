@@ -2,7 +2,7 @@ class AnalisadorLexico {
     #matriz;
 
     constructor() {
-        this.#matriz = Array()
+        this.#matriz = null
         this.#inicializaArray()
     }
 
@@ -36,10 +36,7 @@ class AnalisadorLexico {
     }
 
     #inicializaArray() {
-        this.#matriz[0] = Array()
-        for (let i = 0; i <= 25; i++) {
-            this.#matriz[0].push(-1)
-        }
+        this.#matriz = Array.from({length: 100}, () => Array(25).fill(null))
     }
 
     #validaTokens(token) {
