@@ -16,9 +16,10 @@
     <h1>Analisador Léxico</h1>
 
     <!-- <button type="button" class="btn btn-primary" onclick="console.log(a.alfabeto, a.matriz)">Botão</button> -->
-    <div style="width: 800px;">
+    <div style="width: 1000px;">
         <input id="token" type="text" class="text">
-        <button type="button" class="btn btn-primary" onclick="analisadorLexico.adicionaToken()">ok</button>
+        <button type="button" class="btn btn-primary" onclick="adicionaTokenBD()">ok</button>
+        
         <table class="table">
             <thead>
                 <th>Tokens</th>
@@ -28,7 +29,9 @@
             </tbody>
         </table>
 
-        <table id="matrizTabela" class="table table-striped-columns table-bordered">
+        <input id="token" type="text" class="text" oninput="verificaPosicao(this.value)">
+
+        <table id="matrizTabela" class="table table-striped-columns table-bordered" style="text-align: center;"> 
             <thead>
                 <tr id="row_cabecalho">
                     <th></th>

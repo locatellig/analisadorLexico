@@ -5,7 +5,7 @@
 
 table#matrizTabela {
     width: 100%;
-    /* table-layout: fixed; */
+    table-layout: fixed;
 }
 
 table#matrizTabela thead tr th {
@@ -18,4 +18,12 @@ table#matrizTabela thead tr th {
 table td:hover {
     background-color: #e0e0e0;
     /* cursor: pointer; */
+}
+
+table td.selecionado_invalido{
+    background-color: #f76363; 
+}
+
+table td.selecionado_valido{
+    background-color: #74f763; 
 }
