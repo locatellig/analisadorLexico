@@ -11,7 +11,7 @@
     <title>Analisador Léxico</title>
 </head>
 
-<body onload="tabela.montaTabela()">
+<body onload="tabela.montaTabela(), tabela.montaTabelaTokens()">
     <!-- <input type="text" oninput="a.matriz = this.value"> -->
     <h1>Analisador Léxico</h1>
 
@@ -19,6 +19,15 @@
     <div style="width: 800px;">
         <input id="token" type="text" class="text">
         <button type="button" class="btn btn-primary" onclick="analisadorLexico.adicionaToken()">ok</button>
+        <table class="table">
+            <thead>
+                <th>Tokens</th>
+            </thead>
+            <tbody id="tokens">
+
+            </tbody>
+        </table>
+
         <table id="matrizTabela" class="table table-striped-columns table-bordered">
             <thead>
                 <tr id="row_cabecalho">

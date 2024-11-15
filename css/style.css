@@ -14,3 +14,8 @@ table#matrizTabela thead tr th {
     width: calc(100% / 27);   
     overflow: hidden;
 }
+
+table td:hover {
+    background-color: #e0e0e0;
+    /* cursor: pointer; */
+}
