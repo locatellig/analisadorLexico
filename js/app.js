@@ -53,11 +53,6 @@ class AnalisadorLexico {
 }
 
 class Tabela {
-    constructor() {
-        this.linhas = 100
-        this.colunas = 26
-    }
-
     montaTabelaTokens() {
         let arrayTokens = bd.recuperarTokens()
         let bodyTabelaTokens = document.getElementById('tokens')
@@ -78,6 +73,7 @@ class Tabela {
     montaTabela() {
         let matriz = analisadorLexico.getMatriz()
         let bodyTabela = document.getElementById('matrizBody')
+
         bodyTabela.innerHTML = ''
         for (let i = 0; i < matriz.length; i++) {
 
@@ -91,6 +87,16 @@ class Tabela {
                     celulaTabela.innerHTML = matriz[i][x]
                     celulaTabela.id = `${i}_${x}`
                 }
+            }
+        }
+    }
+
+    limpaTabelaMatriz(tamanhoString, alfabeto) {
+        for (let i = 1; i <= (tamanhoString); i++) {
+            let posicaoAlfabeto = alfabeto.indexOf(ultimaPalavra.slice(-i)[0].toUpperCase()) + 1
+            let tdLetra = document.getElementById(`${tamanhoAnterior - i}_${posicaoAlfabeto}`)
+            if (tdLetra != null) {
+                tdLetra.className = ''
             }
         }
     }
@@ -118,6 +124,8 @@ class BD {
 
     gravarToken(token) {
         let id = this.getProximoID()
+
+        token.id = id
 
         localStorage.setItem(id, JSON.stringify(token))
 
@@ -167,35 +175,97 @@ function adicionaTokenBD() {
 }
 
 let tamanhoAnterior = 0
-let ultimoCaractere = ''
+let ultimaPalavra = ''
 
-function verificaPosicao(texto) {
-    let matriz = analisadorLexico.getMatriz()
-    let alfabeto = analisadorLexico.getAlfabeto()
-    const tamanhoAtual = texto.length
+async function verificaPosicao(texto, validaToken = false) {
+    const matriz = analisadorLexico.getMatriz()
+    const alfabeto = analisadorLexico.getAlfabeto()
+    const tamanhoAtual = texto.trim().length
+    let posicaoAlfabeto
+    let tdLetra
 
-    if ((tamanhoAtual == 0) || (matriz[tamanhoAtual-1] != undefined)) {
+    if ((tamanhoAtual == 0) || (matriz[tamanhoAtual - 1] != undefined)) {
         //apagou o caractere
         if (tamanhoAtual < tamanhoAnterior) {
-            let posicaoAlfabeto = alfabeto.indexOf(ultimoCaractere.toUpperCase()) + 1
-            let tdLetra = document.getElementById(`${tamanhoAtual}_${posicaoAlfabeto}`)
-            if (tdLetra != null) {
-                tdLetra.className = ''
-            }
+            tabela.limpaTabelaMatriz((tamanhoAnterior - tamanhoAtual), alfabeto)
         }
         else {
-            let posicaoAlfabeto = alfabeto.indexOf(texto.slice(-1).toUpperCase()) + 1
-            let tdLetra = document.getElementById(`${tamanhoAtual - 1}_${posicaoAlfabeto}`)
-            if (posicaoAlfabeto > 0) {
-                if (matriz[tamanhoAtual - 1][posicaoAlfabeto] === (tamanhoAtual - 1)) {
-                    tdLetra.className = 'selecionado_valido'
-                } else {
-                    tdLetra.className = 'selecionado_invalido'
+            //Separador ' '
+            if (texto.slice(-1) == ' ') {
+                //Chama função recursiva para validar o token informado
+                verificaPosicao(texto.trim(), true)
+                return
+            }
+
+            if (validaToken) {
+                document.getElementById('validarToken').readOnly = true
+
+                for (let i = 0; i <= tamanhoAtual; i++) {
+                    posicaoAlfabeto = alfabeto.indexOf(texto[i]) + 1
+                    tdLetra = document.getElementById(`${i}_${posicaoAlfabeto}`)
+
+                    if (tdLetra != null) {
+                        const classeAtual = tdLetra.className;
+
+                        tdLetra.className = 'selecionado_verificando'
+
+                        await new Promise((resolve) => setTimeout(resolve, 500));
+
+                        tdLetra.className = classeAtual
+                    }
+                }
+
+                validaTokenExistente(texto)
+                document.getElementById('validarToken').value = ''
+                tabela.limpaTabelaMatriz(tamanhoAtual, alfabeto)
+                document.getElementById('validarToken').readOnly = false
+
+            } else {
+                posicaoAlfabeto = alfabeto.indexOf(texto.slice(-1).toUpperCase()) + 1
+                tdLetra = document.getElementById(`${tamanhoAtual - 1}_${posicaoAlfabeto}`)
+
+                if (posicaoAlfabeto > 0) {
+                    if (matriz[tamanhoAtual - 1][posicaoAlfabeto] === (tamanhoAtual - 1)) {
+                        tdLetra.className = 'selecionado_valido'
+                    } else {
+                        tdLetra.className = 'selecionado_invalido'
+                    }
                 }
             }
         }
     }
+    tamanhoAnterior = document.getElementById('validarToken').value.length
+    ultimaPalavra = texto
+}
 
-    tamanhoAnterior = texto. length
-    ultimoCaractere = texto.slice(-1)
+function apenasLetrasMaiusculas(texto, permiteEspaco) {
+    if (permiteEspaco && texto.trim().length > 0) {
+        return texto.replace(/[^A-Z\s]/g, '')
+    } else {
+        return texto.replace(/[^A-Z]/g, '')
+    }
+}
+
+function validaTokenExistente(texto) {
+    let tokens = bd.recuperarTokens()
+    //Percorre todo array de objetos procurando pelo token informado
+    //item é o parametro que recebe o objeto que está no indice do array
+    let tokenExistente = tokens.some(item => item.token === texto)
+    if (tokenExistente) {
+        document.getElementById('cabecalhoModal').className = 'modal-header text-success'
+        document.getElementById('textoCabecalho').innerHTML = 'Token válido'
+        document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!'
+        document.getElementById('botaoModal').className = 'btn btn-success'
+
+        let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+        modalToken.show();
+    } else {
+        document.getElementById('cabecalhoModal').className = 'modal-header text-danger'
+        document.getElementById('textoCabecalho').innerHTML = 'Token inválido'
+        document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!'
+        document.getElementById('botaoModal').className = 'btn btn-danger'
+
+        let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+        modalToken.show();
+    }
 }
