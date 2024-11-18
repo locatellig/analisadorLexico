@@ -15,10 +15,9 @@ table#matrizTabela thead tr th {
     overflow: hidden;
 }
 
-table td:hover {
+/* table td:hover {
     background-color: #e0e0e0;
-    /* cursor: pointer; */
-}
+} */
 
 table td.selecionado_valido{
     background-color: #74f763; 
@@ -38,4 +37,15 @@ ol li.token_valido {
 
 ol li.token_invalido {
     color: #f76363; 
+}
+
+a.excluir{
+    color: black;
+    opacity: 0.3;
+}
+
+a.excluir:hover{
+    color: rgb(248, 52, 52);
+    cursor: pointer;
+    opacity: 1;
 }

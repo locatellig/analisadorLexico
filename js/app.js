@@ -64,7 +64,22 @@ class Tabela {
 
             let celulaTabelaTokens = linhaTabelaTokens.insertCell()
 
-            celulaTabelaTokens.innerHTML = valor.token
+            celulaTabelaTokens.innerHTML = valor.token 
+            celulaTabelaTokens.style.width = '95%'
+
+            let btn = document.createElement("a")
+            btn.className = 'excluir'
+            btn.innerHTML = '<i class="fa-solid fa-trash-can"></i>'
+            btn.id = `id_${valor.id}`
+            btn.onclick = function () {
+                //Remove a despesa
+                let id = this.id.replace('id_', '')
+                bd.remover(id)
+
+                window.location.reload();
+            }
+
+            linhaTabelaTokens.insertCell().append(btn)
         }
 
         arrayTokens.forEach(funcaoCallBack)
@@ -155,6 +170,10 @@ class BD {
 
         return arrayTokens
     }
+
+    remover(id) {
+        localStorage.removeItem(id)
+    }
 }
 
 let bd = new BD()
@@ -172,6 +191,8 @@ function adicionaTokenBD() {
     bd.gravarToken(token)
 
     tabela.montaTabelaTokens()
+
+    tokenElement.value = ''
 }
 
 let tamanhoAnterior = 0
