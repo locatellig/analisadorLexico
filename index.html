@@ -24,24 +24,56 @@
     <title>Analisador Léxico</title>
 </head>
 
-<body onload="tabela.montaTabela(), tabela.montaTabelaTokens()">
-    <!-- <input type="text" oninput="a.matriz = this.value"> -->
-    <h1>Analisador Léxico</h1>
+<body onload="tabela.montaTabela(), tabela.montaTabelaTokens(), paginacao.montaPaginacao()">
 
-    <!-- <button type="button" class="btn btn-primary" onclick="console.log(a.alfabeto, a.matriz)">Botão</button> -->
-    <div style="width: 1000px;">
-        <input id="token" type="text" class="text" oninput="this.value = apenasLetrasMaiusculas(this.value, false)">
-        <button type="button" class="btn btn-primary" onclick="adicionaTokenBD()">ok</button>
+    <header>
+        <h1>Analisador Léxico</h1>
+    </header>
 
-        <table class="table">
-            <thead>
-                <th>Tokens</th>
-                <th></th>
-            </thead>
-            <tbody id="tokens">
+    <section class="container">
+        <div class="row">
+            <div class="col-sm-5">
+                <input id="token" type="text" class="text"
+                    oninput="this.value = apenasLetrasMaiusculas(this.value, false)">
+                <button type="button" class="btn btn-success" onclick="adicionaTokenBD()">Adicionar</button>
+            </div>
+        </div>
 
-            </tbody>
-        </table>
+        <!-- row -->
+        <div class="row">
+
+            <!-- row -->
+            <div class="row col-sm-6">
+                <div class="col">
+                    <table class="table">
+                        <thead>
+                            <th>Tokens</th>
+                            <th></th>
+                        </thead>
+                        <tbody id="tokens">
+
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination tabela -->
+                    <nav id="pagination">
+                        <!-- Cria dinamico -->
+                    </nav>
+                    <!-- fim pagination tabela -->
+                </div>
+            </div>
+            <!-- fim row -->
+
+            <div class="col-sm-6">
+                <ol id="listaInformados">
+
+                </ol>
+            </div>
+
+        </div>
+        <!-- fim row -->
+
+        <hr>
 
         <input id="validarToken" type="text" class="text"
             oninput="this.value = apenasLetrasMaiusculas(this.value, true), verificaPosicao(this.value)">
@@ -82,13 +114,7 @@
 
             </tbody>
         </table>
-
-        <!-- <ol id="listaInformados">
-            <li class="token_valido">Guilherme</li>
-            <li class="token_invalido">Giovani</li>
-        </ol> -->
-    </div>
-
+    </section>
 
     <div class="modal fade" id="modalToken" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">

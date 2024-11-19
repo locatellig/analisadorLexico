@@ -53,27 +53,42 @@ class AnalisadorLexico {
 }
 
 class Tabela {
-    montaTabelaTokens() {
+    #linhasPaginaTokens
+    constructor() {
+        this.#linhasPaginaTokens = 3
+    }
+
+    getLinhasPaginaTokens() {
+        return this.#linhasPaginaTokens
+    }
+
+    montaTabelaTokens(pagina = 1) {
         let arrayTokens = bd.recuperarTokens()
         let bodyTabelaTokens = document.getElementById('tokens')
+
+        //Separa de 3 em 3 para paginação
+        const inicio = (pagina - 1) * this.#linhasPaginaTokens
+        const final = inicio + this.#linhasPaginaTokens
+        const dadosTabela = arrayTokens.slice(inicio, final)
 
         bodyTabelaTokens.innerHTML = ''
 
         let funcaoCallBack = function (valor) {
+
             let linhaTabelaTokens = bodyTabelaTokens.insertRow()
 
             let celulaTabelaTokens = linhaTabelaTokens.insertCell()
 
-            celulaTabelaTokens.innerHTML = valor.token 
+            celulaTabelaTokens.innerHTML = valor.token
             celulaTabelaTokens.style.width = '95%'
 
             let btn = document.createElement("a")
             btn.className = 'excluir'
             btn.innerHTML = '<i class="fa-solid fa-trash-can"></i>'
-            btn.id = `id_${valor.id}`
+            btn.id = `id_token_${valor.id}`
             btn.onclick = function () {
                 //Remove a despesa
-                let id = this.id.replace('id_', '')
+                let id = this.id.replace('id_token_', '')
                 bd.remover(id)
 
                 window.location.reload();
@@ -82,7 +97,7 @@ class Tabela {
             linhaTabelaTokens.insertCell().append(btn)
         }
 
-        arrayTokens.forEach(funcaoCallBack)
+        dadosTabela.forEach(funcaoCallBack)
     }
 
     montaTabela() {
@@ -114,6 +129,83 @@ class Tabela {
                 tdLetra.className = ''
             }
         }
+    }
+}
+
+class Paginacao {
+    constructor(tabela) {
+        this.tabela = tabela
+    }
+
+    montaPaginacao(paginaSelecionada = 1) {
+        const arrayTokens = bd.recuperarTokens()
+        const totalPaginas = Math.ceil((arrayTokens.length / tabela.getLinhasPaginaTokens()))
+        const divPagination = document.getElementById('pagination')
+        divPagination.innerHTML = ''
+
+        let lista = document.createElement('ul')
+        lista.className = 'pagination justify-content-end'
+
+        let itemAnterior = document.createElement('li')
+        itemAnterior.id = 'A'
+        itemAnterior.className = 'page-item'
+        itemAnterior.innerHTML = '<a class="page-link">Anterior</a>'
+        itemAnterior.onclick = function () {
+            paginacao.mudarPagina(this.id)
+        }
+
+        lista.append(itemAnterior)
+
+        for (let i = 1; i <= totalPaginas; i++) {
+
+            let itemLista = document.createElement('li')
+
+            if (i == paginaSelecionada) {
+                itemLista.className = 'active'
+            }
+            itemLista.id = `item_${i}`
+            itemLista.className += ' page-item'
+            itemLista.innerHTML = `<a class="page-link">${i}</a>`
+            itemLista.onclick = function () {
+                paginacao.mudarPagina(this.id)
+            }
+            lista.append(itemLista)
+
+        }
+
+        let itemProximo = document.createElement('li')
+        itemProximo.id = 'P'
+        itemProximo.className = 'page-item'
+        itemProximo.innerHTML = '<a class="page-link">Próximo</a>'
+        itemProximo.onclick = function () {
+            paginacao.mudarPagina(this.id)
+        }
+
+        lista.append(itemProximo)
+
+        divPagination.append(lista)
+    }
+
+    mudarPagina(pagina) {
+        let paginaSelecionada
+        if (pagina == 'A' || pagina == 'P') {
+            let paginaAtiva = document.getElementsByClassName('active')
+
+            if (pagina == 'A') {
+                paginaSelecionada = parseInt(paginaAtiva[0].id.replace('item_', '')) - 1
+            } else {
+                paginaSelecionada = parseInt(paginaAtiva[0].id.replace('item_', '')) + 1
+            }
+
+        } else {
+            paginaSelecionada = parseInt(pagina.replace('item_', ''))
+        }
+
+        if (paginaSelecionada > 0) {
+            this.tabela.montaTabelaTokens(paginaSelecionada)
+            this.montaPaginacao(paginaSelecionada)
+        }
+
     }
 }
 
@@ -179,6 +271,7 @@ class BD {
 let bd = new BD()
 let analisadorLexico = new AnalisadorLexico()
 let tabela = new Tabela()
+let paginacao = new Paginacao(tabela)
 
 function adicionaTokenBD() {
     let tokenElement = document.getElementById('token')
@@ -191,6 +284,7 @@ function adicionaTokenBD() {
     bd.gravarToken(token)
 
     tabela.montaTabelaTokens()
+    tabela.montaPaginacao()
 
     tokenElement.value = ''
 }
@@ -269,10 +363,14 @@ function apenasLetrasMaiusculas(texto, permiteEspaco) {
 
 function validaTokenExistente(texto) {
     let tokens = bd.recuperarTokens()
+
     //Percorre todo array de objetos procurando pelo token informado
     //item é o parametro que recebe o objeto que está no indice do array
     let tokenExistente = tokens.some(item => item.token === texto)
     if (tokenExistente) {
+
+        addListaTokens(texto, true)
+        //Modal sucesso
         document.getElementById('cabecalhoModal').className = 'modal-header text-success'
         document.getElementById('textoCabecalho').innerHTML = 'Token válido'
         document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!'
@@ -281,6 +379,9 @@ function validaTokenExistente(texto) {
         let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
         modalToken.show();
     } else {
+
+        addListaTokens(texto, false)
+        //Modal erro
         document.getElementById('cabecalhoModal').className = 'modal-header text-danger'
         document.getElementById('textoCabecalho').innerHTML = 'Token inválido'
         document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!'
@@ -288,5 +389,21 @@ function validaTokenExistente(texto) {
 
         let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
         modalToken.show();
+    }
+}
+
+function addListaTokens(descricao, valido) {
+
+    let listaOrdenada = document.getElementById('listaInformados')
+    let elementoLista = document.createElement('li')
+
+    if (valido) {
+        elementoLista.innerHTML = descricao
+        elementoLista.className = 'token_valido'
+        listaOrdenada.append(elementoLista)
+    } else {
+        elementoLista.innerHTML = descricao
+        elementoLista.className = 'token_invalido'
+        listaOrdenada.append(elementoLista)
     }
 }
