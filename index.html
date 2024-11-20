@@ -27,22 +27,31 @@
 <body onload="tabela.montaTabela(), tabela.montaTabelaTokens(), paginacao.montaPaginacao()">
 
     <header>
-        <h1>Analisador Léxico</h1>
+        <h1 style="padding-top: 10px;">Analisador Léxico</h1>
     </header>
+
+    <hr>
 
     <section class="container">
         <div class="row">
-            <div class="col-sm-5">
-                <input id="token" type="text" class="text"
-                    oninput="this.value = apenasLetrasMaiusculas(this.value, false)">
-                <button type="button" class="btn btn-success" onclick="adicionaTokenBD()">Adicionar</button>
+
+            <div class="row">
+
+                <div class="col-sm-6 d-flex">
+                    <input id="token" type="text" class="text"
+                        oninput="this.value = apenasLetrasMaiusculas(this.value, false)"
+                        style="display: block; width: 84%;">
+
+                    <button type="button" class="btn btn-outline-success" onclick="adicionaTokenBD()">Adicionar</button>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <h5>Tokens informados</h5>
+                </div>
+
             </div>
-        </div>
-
-        <!-- row -->
-        <div class="row">
-
-            <!-- row -->
+           
             <div class="row col-sm-6">
                 <div class="col">
                     <table class="table">
@@ -62,7 +71,7 @@
                     <!-- fim pagination tabela -->
                 </div>
             </div>
-            <!-- fim row -->
+           
 
             <div class="col-sm-6">
                 <ol id="listaInformados">
@@ -71,49 +80,51 @@
             </div>
 
         </div>
-        <!-- fim row -->
+        
+        <div class="row">
 
-        <hr>
+            <div class="col">
+                <input id="validarToken" type="text" class="text mb-2" style="display: block; width: 100%;"
+                    oninput="this.value = apenasLetrasMaiusculas(this.value, true), verificaPosicao(this.value)">
 
-        <input id="validarToken" type="text" class="text"
-            oninput="this.value = apenasLetrasMaiusculas(this.value, true), verificaPosicao(this.value)">
+                <table id="matrizTabela" class="table table-striped-columns table-bordered" style="text-align: center;">
+                    <thead>
+                        <tr id="row_cabecalho">
+                            <th></th>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                            <th>G</th>
+                            <th>H</th>
+                            <th>I</th>
+                            <th>J</th>
+                            <th>K</th>
+                            <th>L</th>
+                            <th>M</th>
+                            <th>N</th>
+                            <th>O</th>
+                            <th>P</th>
+                            <th>Q</th>
+                            <th>R</th>
+                            <th>S</th>
+                            <th>T</th>
+                            <th>U</th>
+                            <th>V</th>
+                            <th>W</th>
+                            <th>X</th>
+                            <th>Y</th>
+                            <th>Z</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrizBody">
 
-        <table id="matrizTabela" class="table table-striped-columns table-bordered" style="text-align: center;">
-            <thead>
-                <tr id="row_cabecalho">
-                    <th></th>
-                    <th>A</th>
-                    <th>B</th>
-                    <th>C</th>
-                    <th>D</th>
-                    <th>E</th>
-                    <th>F</th>
-                    <th>G</th>
-                    <th>H</th>
-                    <th>I</th>
-                    <th>J</th>
-                    <th>K</th>
-                    <th>L</th>
-                    <th>M</th>
-                    <th>N</th>
-                    <th>O</th>
-                    <th>P</th>
-                    <th>Q</th>
-                    <th>R</th>
-                    <th>S</th>
-                    <th>T</th>
-                    <th>U</th>
-                    <th>V</th>
-                    <th>W</th>
-                    <th>X</th>
-                    <th>Y</th>
-                    <th>Z</th>
-                </tr>
-            </thead>
-            <tbody id="matrizBody">
-
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
 
     <div class="modal fade" id="modalToken" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"

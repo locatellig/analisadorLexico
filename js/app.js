@@ -284,7 +284,7 @@ function adicionaTokenBD() {
     bd.gravarToken(token)
 
     tabela.montaTabelaTokens()
-    tabela.montaPaginacao()
+    paginacao.montaPaginacao()
 
     tokenElement.value = ''
 }

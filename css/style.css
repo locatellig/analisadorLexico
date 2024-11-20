@@ -19,42 +19,55 @@ table#matrizTabela {
 
 table#matrizTabela thead tr th {
     text-align: center;
-    /* background-color: orange; */
-    width: calc(100% / 27);   
+    width: calc(100% / 27);
     overflow: hidden;
 }
 
-/* table td:hover {
-    background-color: #e0e0e0;
-} */
-
-table td.selecionado_valido{
-    background-color: #74f763; 
+table td.selecionado_valido {
+    background-color: #198754;
 }
 
-table td.selecionado_invalido{
-    background-color: #f76363; 
+table td.selecionado_invalido {
+    background-color: #dc3545;
 }
 
-table td.selecionado_verificando{
-    background-color: #35caf8d2; 
+table td.selecionado_verificando {
+    background-color: #35caf8d2;
 }
 
 ol li.token_valido {
-    color: #74f763;
+    color: #198754;
 }
 
 ol li.token_invalido {
-    color: #f76363; 
+    color: #dc3545;
 }
 
-a.excluir{
+a.excluir {
     color: black;
     opacity: 0.3;
 }
 
-a.excluir:hover{
-    color: rgb(248, 52, 52);
+a.excluir:hover {
+    color: #dc3545;
     cursor: pointer;
     opacity: 1;
+}
+
+.btn {
+    border-radius: 0;
+}
+
+.btn-outline-success {
+    --bs-btn-focus-shadow-rgb: none;
+}
+
+.page-link {
+    color: #198754;
+    cursor: pointer;
+}
+
+.pagination {
+    --bs-pagination-active-bg: #198754;
+    --bs-pagination-hover-color: #198754;
 }
