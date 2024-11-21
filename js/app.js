@@ -188,6 +188,9 @@ class Paginacao {
 
     mudarPagina(pagina) {
         let paginaSelecionada
+        let totalTokens = bd.recuperarTokens()
+        let qtdTotalPaginas = Math.ceil((totalTokens.length / tabela.getLinhasPaginaTokens()))
+
         if (pagina == 'A' || pagina == 'P') {
             let paginaAtiva = document.getElementsByClassName('active')
 
@@ -201,7 +204,7 @@ class Paginacao {
             paginaSelecionada = parseInt(pagina.replace('item_', ''))
         }
 
-        if (paginaSelecionada > 0) {
+        if (paginaSelecionada > 0 && paginaSelecionada <= qtdTotalPaginas) {
             this.tabela.montaTabelaTokens(paginaSelecionada)
             this.montaPaginacao(paginaSelecionada)
         }
