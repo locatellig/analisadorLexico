@@ -3,8 +3,7 @@
 <p>
   Este repositório contém a implementação de um Analisador Léxico, desenvolvido como parte de um trabalho acadêmico. 
   O objetivo do projeto é demonstrar a aplicação prática de Autômatos Finitos como mecanismos reconhecedores de 
-  Linguagens Regulares, utilizando uma matriz de transição de estados para analisar tokens gerados automaticamente 
-  ou fornecidos pelo usuário.
+  Linguagens Regulares, utilizando uma matriz de transição de estados para analisar tokens fornecidos pelo usuário.
 </p>
 
 <h3>Funcionamento</h3> 
@@ -39,8 +38,7 @@
 <p>
   This repository contains the implementation of a Lexical Analyzer, developed as part of an academic project. 
   The goal of the project is to demonstrate the practical application of Finite Automata as mechanisms for recognizing 
-  Regular Languages, using a state transition matrix to analyze tokens either automatically generated or provided 
-  by the user.
+  Regular Languages, using a state transition matrix to analyze tokens provided by the user.
 </p>
 
 <h3>How It Works</h3>
