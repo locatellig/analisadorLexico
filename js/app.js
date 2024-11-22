@@ -297,6 +297,7 @@ let ultimaPalavra = '';
 
 async function verificaPosicao(texto, validaToken = false) {
     
+    let textoOriginal = texto
     texto = texto.toUpperCase();
     const matriz = analisadorLexico.getMatriz();
     const alfabeto = analisadorLexico.getAlfabeto();
@@ -350,28 +351,28 @@ async function verificaPosicao(texto, validaToken = false) {
                         tdLetra.className = classeAtual;
                     }
                 }
+                validaTokenExistente(texto)
+                // if (tokenValido && matriz[tamanhoAtual - 1][0] && matriz[tamanhoAtual - 1][0].includes('F')) {
+                //     addListaTokens(texto, true);
 
-                if (tokenValido && matriz[tamanhoAtual - 1][0] && matriz[tamanhoAtual - 1][0].includes('F')) {
-                    addListaTokens(texto, true);
+                //     document.getElementById('cabecalhoModal').className = 'modal-header text-success';
+                //     document.getElementById('textoCabecalho').innerHTML = 'Token válido';
+                //     document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!';
+                //     document.getElementById('botaoModal').className = 'btn btn-success';
 
-                    document.getElementById('cabecalhoModal').className = 'modal-header text-success';
-                    document.getElementById('textoCabecalho').innerHTML = 'Token válido';
-                    document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!';
-                    document.getElementById('botaoModal').className = 'btn btn-success';
+                //     let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+                //     modalToken.show();
+                // } else {
+                //     addListaTokens(texto, false);
 
-                    let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
-                    modalToken.show();
-                } else {
-                    addListaTokens(texto, false);
+                //     document.getElementById('cabecalhoModal').className = 'modal-header text-danger';
+                //     document.getElementById('textoCabecalho').innerHTML = 'Token inválido';
+                //     document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!';
+                //     document.getElementById('botaoModal').className = 'btn btn-danger';
 
-                    document.getElementById('cabecalhoModal').className = 'modal-header text-danger';
-                    document.getElementById('textoCabecalho').innerHTML = 'Token inválido';
-                    document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!';
-                    document.getElementById('botaoModal').className = 'btn btn-danger';
-
-                    let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
-                    modalToken.show();
-                }
+                //     let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+                //     modalToken.show();
+                // }
 
                 document.getElementById('validarToken').value = '';
                 tabela.limpaTabelaMatriz(tamanhoAtual, alfabeto);
@@ -394,35 +395,35 @@ function apenasLetras(texto, permiteEspaco) {
     }
 }
 
-// function validaTokenExistente(texto) {
-//     let tokens = bd.recuperarTokens()
+function validaTokenExistente(texto) {
+    let tokens = bd.recuperarTokens()
     //Percorre todo array de objetos procurando pelo token informado
     //item é o parametro que recebe o objeto que está no indice do array
-//     let tokenExistente = tokens.some(item => item.token === texto)
-//     if (tokenExistente) {
+    let tokenExistente = tokens.some(item => item.token.toUpperCase() === texto)
+    if (tokenExistente) {
 
-//         addListaTokens(texto, true)
-//         //Modal sucesso
-//         document.getElementById('cabecalhoModal').className = 'modal-header text-success'
-//         document.getElementById('textoCabecalho').innerHTML = 'Token válido'
-//         document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!'
-//         document.getElementById('botaoModal').className = 'btn btn-success'
+        addListaTokens(texto, true)
+        //Modal sucesso
+        document.getElementById('cabecalhoModal').className = 'modal-header text-success'
+        document.getElementById('textoCabecalho').innerHTML = 'Token válido'
+        document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!'
+        document.getElementById('botaoModal').className = 'btn btn-success'
 
-//         let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
-//         modalToken.show();
-//     } else {
+        let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+        modalToken.show();
+    } else {
 
-//         addListaTokens(texto, false)
-//         //Modal erro
-//         document.getElementById('cabecalhoModal').className = 'modal-header text-danger'
-//         document.getElementById('textoCabecalho').innerHTML = 'Token inválido'
-//         document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!'
-//         document.getElementById('botaoModal').className = 'btn btn-danger'
+        addListaTokens(texto, false)
+        //Modal erro
+        document.getElementById('cabecalhoModal').className = 'modal-header text-danger'
+        document.getElementById('textoCabecalho').innerHTML = 'Token inválido'
+        document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!'
+        document.getElementById('botaoModal').className = 'btn btn-danger'
 
-//         let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
-//         modalToken.show();
-//     }
-// }
+        let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+        modalToken.show();
+    }
+}
 
 function addListaTokens(descricao, valido) {
 
