@@ -292,108 +292,137 @@ function adicionaTokenBD() {
     tokenElement.value = ''
 }
 
-let tamanhoAnterior = 0
-let ultimaPalavra = ''
+let tamanhoAnterior = 0;
+let ultimaPalavra = '';
 
 async function verificaPosicao(texto, validaToken = false) {
-    const matriz = analisadorLexico.getMatriz()
-    const alfabeto = analisadorLexico.getAlfabeto()
-    const tamanhoAtual = texto.trim().length
-    let posicaoAlfabeto
-    let tdLetra
+    
+    texto = texto.toUpperCase();
+    const matriz = analisadorLexico.getMatriz();
+    const alfabeto = analisadorLexico.getAlfabeto();
+    const tamanhoAtual = texto.trim().length;
+    let posicaoAlfabeto;
+    let tdLetra;
 
-    if ((tamanhoAtual == 0) || (matriz[tamanhoAtual - 1] != undefined)) {
-        //apagou o caractere
+    if (tamanhoAtual === 0 || matriz[tamanhoAtual - 1] !== undefined) {
         if (tamanhoAtual < tamanhoAnterior) {
-            tabela.limpaTabelaMatriz((tamanhoAnterior - tamanhoAtual), alfabeto)
-        }
-        else {
-            //Separador ' '
-            if (texto.slice(-1) == ' ') {
-                //Chama função recursiva para validar o token informado
-                verificaPosicao(texto.trim(), true)
-                return
+            tabela.limpaTabelaMatriz(tamanhoAnterior - tamanhoAtual, alfabeto);
+        } else {
+            for (let i = tamanhoAnterior; i < tamanhoAtual; i++) {
+                posicaoAlfabeto = alfabeto.indexOf(texto[i]) + 1;
+                tdLetra = document.getElementById(`${i}_${posicaoAlfabeto}`);
+
+                if (tdLetra && posicaoAlfabeto > 0) {
+                    if (matriz[i] && matriz[i][posicaoAlfabeto] === i) {
+                        tdLetra.className = 'selecionado_valido';
+                    } else {
+                        tdLetra.className = 'selecionado_invalido';
+                    }
+                }
+            }
+
+            // Separador ' '
+            if (texto.slice(-1) === ' ') {
+                // Valida token ao encontrar um espaço
+                verificaPosicao(texto.trim(), true);
+                return;
             }
 
             if (validaToken) {
-                document.getElementById('validarToken').readOnly = true
+                document.getElementById('validarToken').readOnly = true;
+                let tokenValido = true;
 
                 for (let i = 0; i <= tamanhoAtual; i++) {
-                    posicaoAlfabeto = alfabeto.indexOf(texto[i]) + 1
-                    tdLetra = document.getElementById(`${i}_${posicaoAlfabeto}`)
+                    posicaoAlfabeto = alfabeto.indexOf(texto[i]) + 1;
+                    tdLetra = document.getElementById(`${i}_${posicaoAlfabeto}`);
 
-                    if (tdLetra != null) {
+                    if (tdLetra !== null) {
                         const classeAtual = tdLetra.className;
 
-                        tdLetra.className = 'selecionado_verificando'
+                        if (classeAtual === 'selecionado_invalido') {
+                            tokenValido = false;
+                        }
+
+                        tdLetra.className = 'selecionado_verificando';
 
                         await new Promise((resolve) => setTimeout(resolve, 500));
 
-                        tdLetra.className = classeAtual
+                        tdLetra.className = classeAtual;
                     }
                 }
 
-                validaTokenExistente(texto)
-                document.getElementById('validarToken').value = ''
-                tabela.limpaTabelaMatriz(tamanhoAtual, alfabeto)
-                document.getElementById('validarToken').readOnly = false
+                if (tokenValido && matriz[tamanhoAtual - 1][0] && matriz[tamanhoAtual - 1][0].includes('F')) {
+                    addListaTokens(texto, true);
 
-            } else {
-                posicaoAlfabeto = alfabeto.indexOf(texto.slice(-1).toUpperCase()) + 1
-                tdLetra = document.getElementById(`${tamanhoAtual - 1}_${posicaoAlfabeto}`)
+                    document.getElementById('cabecalhoModal').className = 'modal-header text-success';
+                    document.getElementById('textoCabecalho').innerHTML = 'Token válido';
+                    document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!';
+                    document.getElementById('botaoModal').className = 'btn btn-success';
 
-                if (posicaoAlfabeto > 0) {
-                    if (matriz[tamanhoAtual - 1][posicaoAlfabeto] === (tamanhoAtual - 1)) {
-                        tdLetra.className = 'selecionado_valido'
-                    } else {
-                        tdLetra.className = 'selecionado_invalido'
-                    }
+                    let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+                    modalToken.show();
+                } else {
+                    addListaTokens(texto, false);
+
+                    document.getElementById('cabecalhoModal').className = 'modal-header text-danger';
+                    document.getElementById('textoCabecalho').innerHTML = 'Token inválido';
+                    document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!';
+                    document.getElementById('botaoModal').className = 'btn btn-danger';
+
+                    let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+                    modalToken.show();
                 }
+
+                document.getElementById('validarToken').value = '';
+                tabela.limpaTabelaMatriz(tamanhoAtual, alfabeto);
+                document.getElementById('validarToken').readOnly = false;
             }
         }
     }
+
     tamanhoAnterior = document.getElementById('validarToken').value.length
     ultimaPalavra = texto
 }
 
-function apenasLetrasMaiusculas(texto, permiteEspaco) {
+function apenasLetras(texto, permiteEspaco) {
     if (permiteEspaco && texto.trim().length > 0) {
-        return texto.replace(/[^A-Z\s]/g, '')
+        // Permitir letras maiúsculas, minúsculas e espaços
+        return texto.replace(/[^a-zA-Z\s]/g, '');
     } else {
-        return texto.replace(/[^A-Z]/g, '')
+        // Permitir apenas letras maiúsculas e minúsculas, sem espaços
+        return texto.replace(/[^a-zA-Z]/g, '');
     }
 }
 
-function validaTokenExistente(texto) {
-    let tokens = bd.recuperarTokens()
-
+// function validaTokenExistente(texto) {
+//     let tokens = bd.recuperarTokens()
     //Percorre todo array de objetos procurando pelo token informado
     //item é o parametro que recebe o objeto que está no indice do array
-    let tokenExistente = tokens.some(item => item.token === texto)
-    if (tokenExistente) {
+//     let tokenExistente = tokens.some(item => item.token === texto)
+//     if (tokenExistente) {
 
-        addListaTokens(texto, true)
-        //Modal sucesso
-        document.getElementById('cabecalhoModal').className = 'modal-header text-success'
-        document.getElementById('textoCabecalho').innerHTML = 'Token válido'
-        document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!'
-        document.getElementById('botaoModal').className = 'btn btn-success'
+//         addListaTokens(texto, true)
+//         //Modal sucesso
+//         document.getElementById('cabecalhoModal').className = 'modal-header text-success'
+//         document.getElementById('textoCabecalho').innerHTML = 'Token válido'
+//         document.getElementById('corpoTexto').innerHTML = 'Token reconhecido com sucesso!'
+//         document.getElementById('botaoModal').className = 'btn btn-success'
 
-        let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
-        modalToken.show();
-    } else {
+//         let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+//         modalToken.show();
+//     } else {
 
-        addListaTokens(texto, false)
-        //Modal erro
-        document.getElementById('cabecalhoModal').className = 'modal-header text-danger'
-        document.getElementById('textoCabecalho').innerHTML = 'Token inválido'
-        document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!'
-        document.getElementById('botaoModal').className = 'btn btn-danger'
+//         addListaTokens(texto, false)
+//         //Modal erro
+//         document.getElementById('cabecalhoModal').className = 'modal-header text-danger'
+//         document.getElementById('textoCabecalho').innerHTML = 'Token inválido'
+//         document.getElementById('corpoTexto').innerHTML = 'O Token foi rejeitado!'
+//         document.getElementById('botaoModal').className = 'btn btn-danger'
 
-        let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
-        modalToken.show();
-    }
-}
+//         let modalToken = new bootstrap.Modal(document.getElementById('modalToken'));
+//         modalToken.show();
+//     }
+// }
 
 function addListaTokens(descricao, valido) {
 

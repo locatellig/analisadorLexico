@@ -39,7 +39,7 @@
 
                 <div class="col-sm-6 d-flex">
                     <input id="token" type="text" class="text"
-                        oninput="this.value = apenasLetrasMaiusculas(this.value, false)"
+                        oninput="this.value = apenasLetras(this.value, false)"
                         style="display: block; width: 84%;">
 
                     <button type="button" class="btn btn-outline-success" onclick="adicionaTokenBD()">Adicionar</button>
@@ -85,7 +85,7 @@
 
             <div class="col">
                 <input id="validarToken" type="text" class="text mb-2" style="display: block; width: 100%;"
-                    oninput="this.value = apenasLetrasMaiusculas(this.value, true), verificaPosicao(this.value)">
+                    oninput="this.value = apenasLetras(this.value, true), verificaPosicao(this.value)">
 
                 <table id="matrizTabela" class="table table-striped-columns table-bordered" style="text-align: center;">
                     <thead>
